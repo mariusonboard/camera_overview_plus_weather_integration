@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kameraübersicht</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #180c25;
+      color: white;
+      font: 16px sans-serif;
+    }
+
+    h1 {
+      color: #ff76c8;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .kamera {
+      overflow: hidden;
+      border-radius: 12px;
+      background: #09060d;
+    }
+
+    .label {
+      padding: 10px 12px;
+      color: #ff76c8;
+    }
+
+    .kamera-bild {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: contain;
+    }
+
+    details.kamera-einstellungen {
+      padding: 8px 10px;
+      border-top: 1px solid #ffffff20;
+      color: #cdb9e4;
+      font-size: 12px;
+    }
+
+    details.kamera-einstellungen summary {
+      cursor: pointer;
+      color: #ffb4df;
+    }
+
+    .kamera-form {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    input,
+    select,
+    button {
+      min-width: 0;
+      padding: 7px 8px;
+      border: 1px solid #69477e;
+      border-radius: 5px;
+      background: #180c25;
+      color: white;
+      font: inherit;
+      font-size: 12px;
+    }
+
+    input {
+      flex: 1;
+    }
+
+    button {
+      cursor: pointer;
+      color: #ffb4df;
+    }
+
+    .kamera-status {
+      margin: 6px 0 0;
+      font-size: 11px;
+    }
+
+    .wetter-kopf,
+    .wetter-zeile {
+      display: grid;
+      grid-template-columns: 1fr 0.65fr 1fr 0.9fr;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .wetter-kopf {
+      padding: 8px 10px;
+      border-bottom: 1px solid #ffffff20;
+      color: #ff76c8;
+      font-size: 11px;
+    }
+
+    .wetter-zeile {
+      padding: 6px 10px;
+      border-bottom: 1px solid #ffffff18;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .wetter-tag {
+      color: #eadcf5;
+    }
+
+    .wetter-temp {
+      white-space: nowrap;
+    }
+
+    .wetter-info {
+      color: #cdb9e4;
+    }
+
+    .ort-suche {
+      display: flex;
+      gap: 6px;
+      padding: 8px 10px;
+    }
+
+    .status {
+      margin: 0;
+      padding: 0 10px 8px;
+      color: #cdb9e4;
+      font-size: 11px;
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding: 18px;
+      }
+
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Kameraübersicht</h1>
+
+  <main>
+    <section class="kamera" data-kamera="1">
+      <div class="label">Kamera 1</div>
+      <img class="kamera-bild" alt="Kamera 1">
+      <details class="kamera-einstellungen">
+        <summary>Kameralink ändern</summary>
+        <form class="kamera-form">
+          <input type="url" placeholder="http://Link Kamera 1" aria-label="Link für Kamera 1">
+          <button type="submit">Speichern</button>
+        </form>
+        <p class="kamera-status" aria-live="polite"></p>
+      </details>
+    </section>
+
+    <section class="kamera" data-kamera="2">
+      <div class="label">Kamera 2</div>
+      <img class="kamera-bild" alt="Kamera 2">
+      <details class="kamera-einstellungen">
+        <summary>Kameralink ändern</summary>
+        <form class="kamera-form">
+          <input type="url" placeholder="http://Link Kamera 2" aria-label="Link für Kamera 2">
+          <button type="submit">Speichern</button>
+        </form>
+        <p class="kamera-status" aria-live="polite"></p>
+      </details>
+    </section>
+
+    <section class="kamera" data-kamera="3">
+      <div class="label">Kamera 3</div>
+      <img class="kamera-bild" alt="Kamera 3">
+      <details class="kamera-einstellungen">
+        <summary>Kameralink ändern</summary>
+        <form class="kamera-form">
+          <input type="url" placeholder="http://Link Kamera 3" aria-label="Link für Kamera 3">
+          <button type="submit">Speichern</button>
+        </form>
+        <p class="kamera-status" aria-live="polite"></p>
+      </details>
+    </section>
+
+    <section class="kamera" aria-label="Wettervorhersage">
+      <div class="wetter-kopf">
+        <span id="wetter-titel" style="grid-column: 1 / 3">Wetter · Wutöschingen</span>
+        <span>Sonne</span>
+        <span>Regen</span>
+      </div>
+
+      <div id="wetter">
+        <p class="status">Wetterdaten werden geladen …</p>
+      </div>
+
+      <p class="status" id="status"></p>
+
+      <form class="ort-suche" id="suchformular">
+        <input
+          id="ort-eingabe"
+          type="search"
+          value="Wutöschingen"
+          placeholder="Ort eingeben"
+          aria-label="Ort für Wettervorhersage"
+          required
+        >
+        <button type="submit">Suchen</button>
+      </form>
+
+      <div class="ort-suche" id="auswahl-zeile" hidden>
+        <select id="ort-auswahl" aria-label="Passenden Ort auswählen"></select>
+        <button type="button" id="ort-laden">Ort anzeigen</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Kameraadressen: Standardwerte werden beim ersten Öffnen verwendet.
+    document.querySelectorAll("[data-kamera]").forEach((karte) => {
+      const nummer = karte.dataset.kamera;
+      const bild = karte.querySelector(".kamera-bild");
+      const formular = karte.querySelector(".kamera-form");
+      const eingabe = formular.querySelector("input");
+      const status = karte.querySelector(".kamera-status");
+      const standards = {
+        "1": "http://Link Kamera 1",
+        "2": "http://Link Kamera 2",
+        "3": "http://Link Kamera 3"
+      };
+
+      const speicherSchluessel = "kamera-link-" + nummer;
+      const gespeicherterLink = localStorage.getItem(speicherSchluessel);
+      const startLink = gespeicherterLink || standards[nummer];
+
+      eingabe.value = startLink;
+      bild.src = startLink;
+
+      formular.addEventListener("submit", (ereignis) => {
+        ereignis.preventDefault();
+
+        const link = eingabe.value.trim();
+        if (!link) return;
+
+        bild.src = link;
+        localStorage.setItem(speicherSchluessel, link);
+        status.textContent = "Link gespeichert.";
+      });
+
+      bild.addEventListener("error", () => {
+        status.textContent = "Kamerabild konnte nicht geladen werden. Prüfe den Link.";
+      });
+
+      bild.addEventListener("load", () => {
+        status.textContent = "";
+      });
+    });
+
+    const wetterElement = document.getElementById("wetter");
+    const statusElement = document.getElementById("status");
+    const titelElement = document.getElementById("wetter-titel");
+    const formular = document.getElementById("suchformular");
+    const ortEingabe = document.getElementById("ort-eingabe");
+    const auswahlZeile = document.getElementById("auswahl-zeile");
+    const ortAuswahl = document.getElementById("ort-auswahl");
+
+    let gefundeneOrte = [];
+
+    function wetterText(code) {
+      if (code === 0) return "☀️ Sonnig";
+      if ([1, 2].includes(code)) return "🌤️ Heiter";
+      if (code === 3) return "☁️ Bewölkt";
+      if ([45, 48].includes(code)) return "🌫️ Neblig";
+      if ([51, 53, 55, 56, 57].includes(code)) return "🌦️ Niesel";
+      if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return "🌧️ Regen";
+      if ([71, 73, 75, 77, 85, 86].includes(code)) return "🌨️ Schnee";
+      if ([95, 96, 99].includes(code)) return "⛈️ Gewitter";
+      return "Wetter";
+    }
+
+    function tagName(datum, index) {
+      if (index === 0) return "Heute";
+      if (index === 1) return "Morgen";
+
+      return new Intl.DateTimeFormat("de-DE", {
+        weekday: "short"
+      }).format(new Date(datum + "T12:00:00"));
+    }
+
+    function datumDeutsch(datum) {
+      const [jahr, monat, tag] = datum.split("-");
+      return `${tag}.${monat}.${jahr}`;
+    }
+
+    function uhrzeit(zeit) {
+      return zeit.slice(11, 16);
+    }
+
+    async function sucheOrt(name) {
+      const url = "https://geocoding-api.open-meteo.com/v1/search"
+        + "?name=" + encodeURIComponent(name)
+        + "&count=8&language=de&format=json";
+
+      const antwort = await fetch(url);
+      if (!antwort.ok) throw new Error("Ortssuche fehlgeschlagen");
+
+      const daten = await antwort.json();
+      return daten.results || [];
+    }
+
+    function ortBeschreibung(ort) {
+      return [ort.name, ort.admin1, ort.country]
+        .filter(Boolean)
+        .filter((wert, index, liste) => liste.indexOf(wert) === index)
+        .join(", ");
+    }
+
+    async function ladeWetter(ort) {
+      wetterElement.innerHTML =
+        '<p class="status">Wetterdaten werden geladen …</p>';
+      statusElement.textContent = "";
+      titelElement.textContent = "Wetter · " + ort.name;
+
+      try {
+        const url = "https://api.open-meteo.com/v1/forecast"
+          + "?latitude=" + encodeURIComponent(ort.latitude)
+          + "&longitude=" + encodeURIComponent(ort.longitude)
+          + "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,sunrise,sunset,sunshine_duration"
+          + "&forecast_days=7"
+          + "&timezone=auto";
+
+        const antwort = await fetch(url, { cache: "no-store" });
+        if (!antwort.ok) throw new Error("Wetterdaten nicht erreichbar");
+
+        const daten = await antwort.json();
+        const tage = daten.daily;
+
+        wetterElement.innerHTML = tage.time.map((datum, i) => {
+          const sonnenstunden = (tage.sunshine_duration[i] / 3600)
+            .toLocaleString("de-DE", { maximumFractionDigits: 1 });
+
+          return `
+            <div class="wetter-zeile">
+              <span class="wetter-tag">
+                ${tagName(datum, i)}<br>
+                ${datumDeutsch(datum)}<br>
+                ${wetterText(tage.weather_code[i])}
+              </span>
+
+              <span class="wetter-temp">
+                ↑ ${Math.round(tage.temperature_2m_max[i])}°<br>
+                ↓ ${Math.round(tage.temperature_2m_min[i])}°
+              </span>
+
+              <span class="wetter-info">
+                ${sonnenstunden} Std.<br>
+                ↑ ${uhrzeit(tage.sunrise[i])}<br>
+                ↓ ${uhrzeit(tage.sunset[i])}
+              </span>
+
+              <span class="wetter-info">
+                ${Number(tage.precipitation_sum[i]).toLocaleString("de-DE")} mm<br>
+                Chance: ${tage.precipitation_probability_max[i] ?? "–"} %
+              </span>
+            </div>
+          `;
+        }).join("");
+
+        statusElement.textContent =
+          "Aktualisiert: " +
+          new Intl.DateTimeFormat("de-DE", {
+            hour: "2-digit",
+            minute: "2-digit"
+          }).format(new Date());
+      } catch (fehler) {
+        wetterElement.innerHTML =
+          '<p class="status">Wetterdaten konnten nicht geladen werden. Prüfe die Internetverbindung und lade die Seite erneut.</p>';
+      }
+    }
+
+    formular.addEventListener("submit", async (ereignis) => {
+      ereignis.preventDefault();
+
+      const suchtext = ortEingabe.value.trim();
+      if (!suchtext) return;
+
+      statusElement.textContent = "Suche Ort …";
+      auswahlZeile.hidden = true;
+
+      try {
+        gefundeneOrte = await sucheOrt(suchtext);
+
+        if (gefundeneOrte.length === 0) {
+          statusElement.textContent = "Kein passender Ort gefunden.";
+          return;
+        }
+
+        ortAuswahl.innerHTML = gefundeneOrte.map((ort, index) =>
+          `<option value="${index}">${ortBeschreibung(ort)}</option>`
+        ).join("");
+
+        auswahlZeile.hidden = false;
+        statusElement.textContent = gefundeneOrte.length > 1
+          ? "Wähle den passenden Ort aus."
+          : "";
+
+        if (gefundeneOrte.length === 1) {
+          await ladeWetter(gefundeneOrte[0]);
+        }
+      } catch (fehler) {
+        statusElement.textContent = "Die Ortssuche ist fehlgeschlagen.";
+      }
+    });
+
+    document.getElementById("ort-laden").addEventListener("click", () => {
+      const ort = gefundeneOrte[Number(ortAuswahl.value)];
+      if (ort) ladeWetter(ort);
+    });
+
+    // Beim ersten Öffnen automatisch Wutöschingen laden.
+    (async () => {
+      try {
+        const orte = await sucheOrt("Wutöschingen");
+        if (orte.length) await ladeWetter(orte[0]);
+      } catch (fehler) {
+        wetterElement.innerHTML =
+          '<p class="status">Wetterdaten konnten nicht geladen werden. Prüfe die Internetverbindung.</p>';
+      }
+    })();
+  </script>
+</body>
+</html>
