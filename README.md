@@ -1,2 +1,2 @@
-# camera_overview_plus_weather_integration
+# Camera Overview + Weather Integration
 HTML Page to organize camera links.
