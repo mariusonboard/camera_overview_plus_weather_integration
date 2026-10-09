@@ -1,9 +1,9 @@
 # Camera Overview + Weather Integration
 
-HTML Page to organize camera links.
+HTML Page for managing camera links.
 
 
-After loading the page & setting the links and the location for weather forecast you can view up to 3 cameras and forecast for a chosen location.
-The browser saves settings in chache for max. comfort.
 
-Enjoy a flexible viewer where it's easy to change camera source via interactive entering.
+Once you've loaded the page and entered the links and the location for the weather forecast, you can view up to three cameras and the weather forecast at the same time. The browser caches the settings to provide you with maximum convenience.
+
+Enjoy a flexible viewer that lets you easily switch the camera source and weather location using interactive controls.
